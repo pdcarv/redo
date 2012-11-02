@@ -1,0 +1,57 @@
+grammar Todo
+	rule todo
+		(bash_style_comment)*
+		{
+			def value
+				elements[0].value
+			end
+		}
+	end
+
+	rule bash_style_comment
+		('#' todo_tag space todo_text /
+		 '#' space todo_tag space todo_text /
+		 (tab / space) '#' todo_tag space todo_text /
+		 (tab / space) '#' space todo_tag space todo_text)
+		 {
+		 	def value
+		 		elements.last.value
+		 	end
+		 }
+	end
+
+	rule todo_tag
+		('TODO' /
+		 'Todo' /
+		 'todo' ) ':'?
+	end
+
+	rule html_style_comment
+		open_html_tag text close_html_tag
+	end
+
+	rule open_html_tag
+		'<!--'
+	end
+
+	rule close_html_tag
+		'-->'
+	end
+
+	rule todo_text
+		.*
+		{
+			def value
+				text_value
+			end
+		}
+	end
+
+	rule space
+		' '*
+	end
+
+	rule tab
+		[\t]*
+	end
+end
